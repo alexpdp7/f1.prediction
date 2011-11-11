@@ -32,12 +32,16 @@ public class WikipediaScraper {
 		for(int i=1; i<driversAndConstructorsTable.getRowCount(); i++) {
 			String constructor = driversAndConstructorsTable.getCellAt(i, 1).asText();
 			HtmlTableCell possibleDriverCell = driversAndConstructorsTable.getCellAt(i, 6);
+			
+			// rowspans (one row per driver, but constructor spans several rows) means sometimes we need to extract data in a different way...
 			String driver = null;
 			if(possibleDriverCell != null) {
 				driver = possibleDriverCell.asText();
 			}
 			else {
 				Object matching = driversAndConstructorsTable.getRow(i).getFirstByXPath("descendant::a[2]");
+				
+				// Sakon Yamamoto car change in 2010 means odd rowspanning!
 				if(matching != null) {
 					driver = ((HtmlAnchor) matching).asText();
 				}
