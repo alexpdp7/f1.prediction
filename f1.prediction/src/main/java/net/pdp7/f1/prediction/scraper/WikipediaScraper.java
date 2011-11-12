@@ -19,13 +19,13 @@ public class WikipediaScraper {
 	}
 	
 	public void scrape(int season) throws IOException {
-		
 		jdbcTemplate.update("merge into seasons(season) values (?)", season);
 		
 		WebClient webClient = new WebClient();
 		HtmlPage page = webClient.getPage("http://en.wikipedia.org/wiki/" + season + "_Formula_One_season");
 		scrapeSeasonTeamDrivers(season, page);
 		scrapeCalendar(season, page);
+		scrapeStandings(season, page);
 	}
 
 	protected void scrapeCalendar(int season, HtmlPage page) {
@@ -77,5 +77,38 @@ public class WikipediaScraper {
 			jdbcTemplate.update("insert into season_team_drivers(season, team_name, driver_name) values (?,?,?)", season, constructor, driver);
 		}
 	}
-
+	
+	protected void scrapeStandings(int season, HtmlPage page) {
+		
+		String tableExtractXPath = season > 2010 
+				? "//span[@id='Drivers_standings']/../following-sibling::table[2]//table"
+				: "//span[@id='Drivers']/../following-sibling::table[1]//table";
+		
+		HtmlTable standingsTable = page.getFirstByXPath(tableExtractXPath);
+		
+		for(int i=1; i<standingsTable.getRowCount() - 1; i++) {
+			String driver = standingsTable.getCellAt(i, 1).asText().trim();
+			
+			for(int j=2; j<standingsTable.getRow(i).getCells().size()-1; j++) {
+				HtmlTableCell resultCell = standingsTable.getCellAt(i, j);
+				
+				boolean pole = resultCell.getByXPath("b").size() > 0;
+				boolean fastestLap = resultCell.getByXPath("i").size() > 0;
+				
+				String text = resultCell.asText();
+				
+				Integer finishPosition = text.matches("^\\d+") ? Integer.parseInt(text.replaceAll("\\D", "")) : null;
+				String otherResult = text.matches("^\\d+") ? null : text;
+				
+				jdbcTemplate.update("insert into grand_prix_driver_results(season, round, driver_name, pole, fastest_lap, finish_position, other_result) values (?,?,?,?,?,?,?)", 
+						season,
+						j-2,
+						driver,
+						pole,
+						fastestLap,
+						finishPosition,
+						otherResult);
+			}
+		}
+	}
 }
