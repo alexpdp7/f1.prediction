@@ -25,6 +25,8 @@ public class WikipediaScraperTest extends TestCase {
 		System.out.println(jdbcTemplate.queryForList("select * from teams order by team_name"));
 		System.out.println(jdbcTemplate.queryForList("select * from drivers order by driver_name"));
 		System.out.println(jdbcTemplate.queryForList("select * from season_team_drivers order by season, team_name, driver_name"));
+		System.out.println(jdbcTemplate.queryForList("select * from circuits order by circuit_name"));
+		System.out.println(jdbcTemplate.queryForList("select * from calendar order by season, round"));
 	}
 	
 }

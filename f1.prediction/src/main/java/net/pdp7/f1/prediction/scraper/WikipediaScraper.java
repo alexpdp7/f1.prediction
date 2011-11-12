@@ -25,6 +25,24 @@ public class WikipediaScraper {
 		WebClient webClient = new WebClient();
 		HtmlPage page = webClient.getPage("http://en.wikipedia.org/wiki/" + season + "_Formula_One_season");
 		scrapeSeasonTeamDrivers(season, page);
+		scrapeCalendar(season, page);
+	}
+
+	protected void scrapeCalendar(int season, HtmlPage page) {
+		HtmlTable calendarTable = page.getFirstByXPath("//span[contains(@id,'race_schedule') or contains(@id,'Race_Calendar') or contains(@id,'calendar') or contains(@id,'Calendar')]/../following-sibling::table[1]");
+		
+		int start = season > 2006 ? 2 : 1; // from 2007 onwards, table header has two rows
+		int extraneousRows = season == 2009 ? 1 : 0; // 2009 has an extra sources row at the bottom
+		
+		for(int i= start; i<calendarTable.getRowCount() - extraneousRows; i++) {
+			String circuitName = calendarTable.getRow(i).getCell(3).asText();
+			jdbcTemplate.update("merge into circuits(circuit_name) values (?)", circuitName);
+			jdbcTemplate.update("insert into calendar(season, round, grand_prix, circuit_name) values(?,?,?,?)", 
+					season, 
+					i - start + 1, 
+					calendarTable.getRow(i).getCell(2).asText(),
+					circuitName);
+		}
 	}
 
 	protected void scrapeSeasonTeamDrivers(int season, HtmlPage page) {
