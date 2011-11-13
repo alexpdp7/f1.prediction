@@ -102,7 +102,7 @@ public class WikipediaScraper {
 				
 				jdbcTemplate.update("insert into grand_prix_driver_results(season, round, driver_name, pole, fastest_lap, finish_position, other_result) values (?,?,?,?,?,?,?)", 
 						season,
-						j-2,
+						j-1,
 						driver,
 						pole,
 						fastestLap,

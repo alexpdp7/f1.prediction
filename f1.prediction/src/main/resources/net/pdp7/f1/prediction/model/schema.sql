@@ -29,12 +29,13 @@ create table calendar (
 );
 
 create table grand_prix_driver_results (
-	season                             number(4) not null references seasons(season),
+	season                             number(4),
 	round                              integer not null, 
 	driver_name                        varchar(100) not null references drivers(driver_name),
 	pole                               boolean not null,
 	fastest_lap                        boolean not null,
 	finish_position                    integer null,
 	other_result                       varchar(100) null,
-	primary key(season,round,driver_name)
+	primary key(season,round,driver_name),
+	foreign key(season, round) references calendar(season, round)
 );
