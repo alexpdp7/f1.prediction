@@ -2,6 +2,13 @@ package net.pdp7.f1.prediction.scraper;
 
 import java.io.IOException;
 
+import net.pdp7.commons.spring.context.annotation.AnnotationConfigApplicationContextUtils;
+import net.pdp7.commons.util.MapUtils;
+import net.pdp7.f1.prediction.model.SchemaService;
+import net.pdp7.f1.prediction.spring.DataSourceConfig;
+import net.pdp7.f1.prediction.spring.F1PredictionConfig;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -92,10 +99,14 @@ public class WikipediaScraper {
 			for(int j=2; j<standingsTable.getRow(i).getCells().size()-1; j++) {
 				HtmlTableCell resultCell = standingsTable.getCellAt(i, j);
 				
-				boolean pole = resultCell.getByXPath("b").size() > 0;
-				boolean fastestLap = resultCell.getByXPath("i").size() > 0;
+				boolean pole = resultCell.getByXPath(".//b").size() > 0;
+				boolean fastestLap = resultCell.getByXPath(".//i").size() > 0;
 				
 				String text = resultCell.asText();
+				
+				if(text.trim().length() == 0) {
+					continue;
+				}
 				
 				Integer finishPosition = text.matches("^\\d+") ? Integer.parseInt(text.replaceAll("\\D", "")) : null;
 				String otherResult = text.matches("^\\d+") ? null : text;
@@ -110,5 +121,25 @@ public class WikipediaScraper {
 						otherResult);
 			}
 		}
+	}
+	
+	public static void main(String[] args) throws Exception {
+		String databaseFileName = args[0];
+		int fromYear = Integer.parseInt(args[1]);
+		int toYear = Integer.parseInt(args[2]);
+		
+		AnnotationConfigApplicationContext applicationContext = AnnotationConfigApplicationContextUtils.createConfiguredAnnotationConfigApplicationContext(
+				MapUtils.createPropertiesFromMap(MapUtils.build("jdbc.url", "jdbc:h2:" + databaseFileName).map), 
+				F1PredictionConfig.class, DataSourceConfig.JdbcUrlDataSourceConfig.class);
+		
+		applicationContext.getBean("schemaService", SchemaService.class).createSchema();
+		
+		WikipediaScraper wikipediaScraper = applicationContext.getBean("wikipediaScraper", WikipediaScraper.class);
+		
+		for(int i = fromYear; i<= toYear; i++) {
+			wikipediaScraper.scrape(i);
+		}
+		
+		System.out.println("Finished ok!");
 	}
 }
