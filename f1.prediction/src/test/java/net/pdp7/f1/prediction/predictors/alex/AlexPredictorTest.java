@@ -10,7 +10,7 @@ public class AlexPredictorTest extends TestCase {
 
 	public void test() throws Exception {
 		SimpleJdbcTemplate jdbcTemplate = new SimpleJdbcTemplate(ModelTestUtils.get20052011DataSource());
-		PredictorPastEvaluatorTest.testPredictor(new AlexPredictor(new RatingCalculator(jdbcTemplate), jdbcTemplate));
+		PredictorPastEvaluatorTest.testPredictor(new AlexPredictor(new RatingCalculator(jdbcTemplate), jdbcTemplate, 0.32f));
 	}
 	
 }

@@ -16,11 +16,12 @@ public class AlexPredictor implements Predictor {
 	protected final RatingCalculator ratingCalculator;
 	protected final SimpleJdbcTemplate jdbcTemplate;
 	
-	protected float driverPowerRatingDecayRate = 1;
+	protected float driverPowerRatingDecayRate;
 
-	public AlexPredictor(RatingCalculator ratingCalculator, SimpleJdbcTemplate jdbcTemplate) {
+	public AlexPredictor(RatingCalculator ratingCalculator, SimpleJdbcTemplate jdbcTemplate, float driverPowerRatingDecayRate) {
 		this.ratingCalculator = ratingCalculator;
 		this.jdbcTemplate = jdbcTemplate;
+		this.driverPowerRatingDecayRate = driverPowerRatingDecayRate;
 	}
 	
 	public Prediction predict(int season, int round, String circuitName, Entrant[] entrants) {
