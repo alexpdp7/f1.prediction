@@ -71,6 +71,11 @@
 			<artifactId>cglib-nodep</artifactId>
 			<version>2.2</version>
 		</dependency>
+		<dependency>
+			<groupId>net.pdp7</groupId>
+			<artifactId>commons.pdp7</artifactId>
+			<version>master</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>f1.prediction</finalName>

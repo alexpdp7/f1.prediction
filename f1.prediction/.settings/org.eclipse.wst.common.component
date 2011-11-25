@@ -7,6 +7,9 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/test/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/test/resources"/>
+        <dependent-module archiveName="commons.pdp7-master.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/commons.pdp7/commons.pdp7">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="context-root" value="f1.prediction"/>
         <property name="java-output-path" value="/f1.prediction/target/classes"/>
     </wb-module>
