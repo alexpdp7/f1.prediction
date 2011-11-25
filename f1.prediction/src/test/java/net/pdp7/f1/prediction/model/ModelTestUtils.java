@@ -4,6 +4,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import javax.sql.DataSource;
+
+import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+
 import net.pdp7.commons.io.IoUtils;
 
 public class ModelTestUtils {
@@ -18,6 +22,9 @@ public class ModelTestUtils {
 		out.close();
 		
 		return "jdbc:h2:" + tempFile.getAbsolutePath().replace(".h2.db", "");
-		
+	}
+	
+	public static DataSource get20052011DataSource() throws IOException {
+		return new SingleConnectionDataSource(get20052011DatabaseUrl(), true);
 	}
 }
