@@ -22,9 +22,11 @@ import com.gargoylesoftware.htmlunit.html.HtmlTableCell;
 public class WikipediaScraper {
 	
 	protected final SimpleJdbcTemplate jdbcTemplate;
+	protected final CircuitNameNormalizer circuitNameNormalizer;
 
-	public WikipediaScraper(SimpleJdbcTemplate jdbcTemplate) {
+	public WikipediaScraper(SimpleJdbcTemplate jdbcTemplate, CircuitNameNormalizer circuitNameNormalizer) {
 		this.jdbcTemplate = jdbcTemplate;
+		this.circuitNameNormalizer = circuitNameNormalizer;
 	}
 	
 	public void scrape(int season) throws IOException {
@@ -44,7 +46,7 @@ public class WikipediaScraper {
 		int extraneousRows = season == 2009 ? 1 : 0; // 2009 has an extra sources row at the bottom
 		
 		for(int i= start; i<calendarTable.getRowCount() - extraneousRows; i++) {
-			String circuitName = calendarTable.getRow(i).getCell(3).asText();
+			String circuitName = circuitNameNormalizer.normalize(calendarTable.getRow(i).getCell(3).asText());
 			jdbcTemplate.update("merge into circuits(circuit_name) values (?)", circuitName);
 			jdbcTemplate.update("insert into calendar(season, round, grand_prix, circuit_name) values(?,?,?,?)", 
 					season, 
