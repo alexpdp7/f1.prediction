@@ -18,12 +18,24 @@ public class PredictorPastEvaluatorTest extends TestCase {
 		testPredictor(new RandomPredictor());
 	}
 
-	public static void testPredictor(Predictor predictor) throws IOException {
+	public static int testPredictor(Predictor predictor) throws IOException {
+		PredictorPastEvaluator predictorPastEvaluator = createPredictorPastEvaluator();
+		return predictorPastEvaluator.evaluate(predictor);
+	}
+
+	public static PredictorPastEvaluator predictorPastEvaluator = null;
+	
+	public static PredictorPastEvaluator createPredictorPastEvaluator() throws IOException {
+		if(predictorPastEvaluator != null) {
+			return predictorPastEvaluator;
+		}
+		
 		AnnotationConfigApplicationContext applicationContext = AnnotationConfigApplicationContextUtils.createConfiguredAnnotationConfigApplicationContext(
 				MapUtils.createPropertiesFromMap(MapUtils.build("jdbc.url", ModelTestUtils.get20052011DatabaseUrl()).map), 
 				F1PredictionConfig.class, DataSourceConfig.JdbcUrlDataSourceConfig.class);
 		
-		System.out.println(applicationContext.getBean("predictorPastEvaluator", PredictorPastEvaluator.class).evaluate(predictor));
+		predictorPastEvaluator = applicationContext.getBean("predictorPastEvaluator", PredictorPastEvaluator.class);
+		return predictorPastEvaluator;
 	}
 	
 }

@@ -1,5 +1,8 @@
 package net.pdp7.f1.prediction.predictors.alex;
 
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
 import net.pdp7.f1.prediction.model.ModelTestUtils;
@@ -11,7 +14,16 @@ public class AlexPredictorTest extends TestCase {
 
 	public void test() throws Exception {
 		SimpleJdbcTemplate jdbcTemplate = new SimpleJdbcTemplate(ModelTestUtils.get20052011DataSource());
-		PredictorPastEvaluatorTest.testPredictor(new AlexPredictor(new RatingCalculator(jdbcTemplate), jdbcTemplate, 0.32f));
+		SortedMap<Float, Integer> results = new TreeMap<Float, Integer>();
+		
+		for(int i=0; i<20; i++) {
+			System.out.println(i);
+			float driverPowerRatingDecayRate = (float) Math.random();
+			int predictorResult = PredictorPastEvaluatorTest.testPredictor(new AlexPredictor(new RatingCalculator(jdbcTemplate), jdbcTemplate, driverPowerRatingDecayRate));
+			results.put(driverPowerRatingDecayRate, predictorResult);
+		}
+		
+		System.out.println(results);
 	}
 	
 	public void test2() throws Exception {
@@ -43,7 +55,7 @@ public class AlexPredictorTest extends TestCase {
 				new Entrant("Williams-Cosworth","Rubens Barrichello"),
 		};
 		
-		System.out.println(new AlexPredictor(new RatingCalculator(jdbcTemplate), jdbcTemplate, 0.32f).predict(2011, 19, "foo", entrants));
+		System.out.println(new AlexPredictor(new RatingCalculator(jdbcTemplate), jdbcTemplate, 0.7455967f).predict(2011, 19, "foo", entrants));
 	}
 	
 }

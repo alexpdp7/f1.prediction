@@ -66,17 +66,16 @@ public class AlexPredictor implements Predictor {
 					.map);
 		
 		float decayRate = driverPowerRatingDecayRate;
-		
 		float ratings = 0.0f;
 		float upperRatings = 0.0f;
-		int distance = 0;
+		int distance = 1;
 		
 		for(Map<String, Object> previousSeasonRound : previousSeasonRounds) {
 			int previousSeason = ((BigDecimal) previousSeasonRound.get("SEASON")).intValue();
 			int previousRound = (Integer) previousSeasonRound.get("ROUND");
 			
 			float unadjustedPreviousRating = ratingCalculator.calculateDriverRating(previousSeason, previousRound, entrant.driverName);
-			float upperRating = (float) Math.exp(-distance*decayRate);
+			float upperRating = decayFactor(distance, decayRate);
 			
 			ratings += unadjustedPreviousRating * upperRating;
 			upperRatings += upperRating;
@@ -84,5 +83,9 @@ public class AlexPredictor implements Predictor {
 		}
 		
 		return ratings/upperRatings;
+	}
+	
+	protected float decayFactor(int ago, float scale) {
+		return (float) Math.exp(-ago*Math.pow(scale/1.3,1.8));
 	}
 }
