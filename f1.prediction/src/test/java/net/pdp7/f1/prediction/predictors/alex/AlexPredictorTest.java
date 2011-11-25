@@ -55,7 +55,7 @@ public class AlexPredictorTest extends TestCase {
 				new Entrant("Williams-Cosworth","Rubens Barrichello"),
 		};
 		
-		System.out.println(new AlexPredictor(new RatingCalculator(jdbcTemplate), jdbcTemplate, 0.77f).predict(2011, 19, "foo", entrants));
+		System.out.println(new AlexPredictor(new RatingCalculator(jdbcTemplate), jdbcTemplate, 0.76418805f).predict(2011, 19, "foo", entrants));
 	}
 	
 }
