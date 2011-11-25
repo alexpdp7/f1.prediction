@@ -1,0 +1,29 @@
+h1. f1.prediction
+
+This is code to implement bots that predict Formula One results. The rules come from the prediction game at http://www.f1wolf.com/ . Currently there are three things implemented:
+
+* A scraper which extracts race results from 2005-2011 from Wikipedia to an H2 embedded database
+* A framework to write predictors
+* A random predictor and my predictor
+
+h2. The scraper
+
+You can find it in "net.pdp7.f1.prediction.scraper.WikipediaScraper":https://github.com/alexpdp7/f1.prediction/blob/master/f1.prediction/src/main/java/net/pdp7/f1/prediction/scraper/WikipediaScraper.java . It uses "HTMLUnit":http://htmlunit.sourceforge.net/ and it's fairly simple; fortunately results formatting in Wikipedia are fairly stable. It writes to a database with this "schema":https://github.com/alexpdp7/f1.prediction/blob/master/f1.prediction/src/main/resources/net/pdp7/f1/prediction/model/schema.sql .
+
+There are some tests in the test folder which you can use to store scraping results in an H2 file.
+
+h2. The framework
+
+It's located in "net.pdp7.f1.prediction.predictors":https://github.com/alexpdp7/f1.prediction/tree/master/f1.prediction/src/main/java/net/pdp7/f1/prediction/predictors
+
+It has:
+
+* "Predictor":https://github.com/alexpdp7/f1.prediction/blob/master/f1.prediction/src/main/java/net/pdp7/f1/prediction/predictors/Predictor.java , which contains the main predictor interface and @Prediction@ and @Entrant@ nested classes (an @Entrant@ is a driver/team pairing). A @Predictor@ returns a @Prediction@ based on a @List@ of @Entrant@s, and which race it is (season, round, circuit).
+* "PredictionScorer":https://github.com/alexpdp7/f1.prediction/blob/master/f1.prediction/src/main/java/net/pdp7/f1/prediction/predictors/PredictionScorer, which evaluates a @Prediction@ according to the contest rules
+* "PredictorPastEvaluator":https://github.com/alexpdp7/f1.prediction/blob/master/f1.prediction/src/main/java/net/pdp7/f1/prediction/predictors/PredictorPastEvaluator.java which runs a Predictor against all scraped results and evaluates it
+
+h2. The scrapers
+
+We have "RandomPredictor":https://github.com/alexpdp7/f1.prediction/blob/master/f1.prediction/src/main/java/net/pdp7/f1/prediction/predictors/RandomPredictor.java which is well, random... and "my predictor":https://github.com/alexpdp7/f1.prediction/tree/master/f1.prediction/src/main/java/net/pdp7/f1/prediction/predictors/alex , which uses past results to make a prediction.
+
+Take a look at the tests for ways to work with your own @Predictor@s.
