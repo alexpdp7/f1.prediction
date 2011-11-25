@@ -17,6 +17,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTable;
 import com.gargoylesoftware.htmlunit.html.HtmlTableCell;
 
+// FIXME: does not seem to handle correctly http://en.wikipedia.org/wiki/2011_Monaco_Grand_Prix , Maldonado's finish position of "18†"
+
 public class WikipediaScraper {
 	
 	protected final SimpleJdbcTemplate jdbcTemplate;
