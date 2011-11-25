@@ -4,10 +4,23 @@ Armando 300 points, Alex 303 points for season 2011 until round 18 (Abu Dhabi)
 
 20111125:
 
-Obtained 251 points for season 2011 until round 18 (Abu Dhabi) on version 8de2236520655ceb6f173739e4d2851246812f5c , with 
+Obtained 251 points for season 2011 until round 18 (Abu Dhabi) on version da81a5c6be732f2ee057b9937f2708165a9fcf3e
 
 (only considering results for pilot on all circuits)
 
-params: driverPowerRatingDecayRate = 0.76418805
+params: driverPowerRatingDecayRate = 0.76418805 (amongst others)
 
 {0.0059624016=178, 0.1161469=220, 0.13400795=231, 0.23807591=247, 0.38375786=243, 0.42349917=243, 0.42643577=243, 0.5200271=244, 0.5208234=244, 0.54353166=245, 0.66947573=243, 0.7556995=251, 0.757229=251, 0.76418805=251, 0.7705754=250, 0.86077666=247, 0.86760247=247, 0.91004735=240, 0.97923595=242, 0.9885696=241}
+
+Prediction for Interlagos:
+
+ 1. Sebastian Vettel
+ 2. Jenson Button
+ 3. Fernando Alonso
+ 4. Lewis Hamilton
+ 5. Mark Webber
+ 6. Felipe Massa
+ 7. Michael Schumacher
+ 8. Nico Rosberg
+ 9. Adrian Sutil
+10. Paul di Resta
