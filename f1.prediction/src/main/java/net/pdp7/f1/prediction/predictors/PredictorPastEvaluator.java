@@ -37,13 +37,14 @@ public class PredictorPastEvaluator {
 						"select team_name, grand_prix_driver_results.driver_name " +
 						"from   grand_prix_driver_results " +
 						"join   season_team_drivers on grand_prix_driver_results.season = season_team_drivers.season and grand_prix_driver_results.driver_name = season_team_drivers.driver_name " +
-						"where  grand_prix_driver_results.season = ?", 
+						"where  grand_prix_driver_results.season = ? " +
+						"and    grand_prix_driver_results.round = ?", 
 						new RowMapper<Entrant>() {
 							public Entrant mapRow(ResultSet rs, int rowNum) throws SQLException {
 								return new Entrant(rs.getString("team_name"), rs.getString("driver_name"));
 							}
 						}, 
-						season).toArray(new Entrant[0]);
+						season, round).toArray(new Entrant[0]);
 				Prediction prediction = predictor.predict(season, round, rs.getString("circuit_name"), entrants);
 				int score = predictionScorer.score(prediction, season, round);
 				logger.debug("season {} round {} prediction {} score {}", new Object[] { season, round, prediction, score});
