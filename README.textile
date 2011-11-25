@@ -6,6 +6,13 @@ This is code to implement bots that predict Formula One results. The rules come 
 * A framework to write predictors
 * A random predictor and my predictor
 
+h2. Dependencies
+
+Uses commons.pdp7 from https://github.com/alexpdp7/commons.pdp7 
+
+Checkout URL: git@github.com:alexpdp7/commons.pdp7.git
+Readonly: git://github.com/alexpdp7/commons.pdp7.git
+
 h2. The scraper
 
 You can find it in "net.pdp7.f1.prediction.scraper.WikipediaScraper":https://github.com/alexpdp7/f1.prediction/blob/master/f1.prediction/src/main/java/net/pdp7/f1/prediction/scraper/WikipediaScraper.java . It uses "HTMLUnit":http://htmlunit.sourceforge.net/ and it's fairly simple; fortunately results formatting in Wikipedia are fairly stable. It writes to a database with this "schema":https://github.com/alexpdp7/f1.prediction/blob/master/f1.prediction/src/main/resources/net/pdp7/f1/prediction/model/schema.sql .
