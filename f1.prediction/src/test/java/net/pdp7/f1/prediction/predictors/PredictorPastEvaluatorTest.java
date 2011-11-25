@@ -1,5 +1,7 @@
 package net.pdp7.f1.prediction.predictors;
 
+import java.io.IOException;
+
 import net.pdp7.commons.spring.context.annotation.AnnotationConfigApplicationContextUtils;
 import net.pdp7.commons.util.MapUtils;
 import net.pdp7.f1.prediction.model.ModelTestUtils;
@@ -13,11 +15,15 @@ import junit.framework.TestCase;
 public class PredictorPastEvaluatorTest extends TestCase {
 
 	public void test() throws Exception {
+		testPredictor(new RandomPredictor());
+	}
+
+	public static void testPredictor(Predictor predictor) throws IOException {
 		AnnotationConfigApplicationContext applicationContext = AnnotationConfigApplicationContextUtils.createConfiguredAnnotationConfigApplicationContext(
 				MapUtils.createPropertiesFromMap(MapUtils.build("jdbc.url", ModelTestUtils.get20052011DatabaseUrl()).map), 
 				F1PredictionConfig.class, DataSourceConfig.JdbcUrlDataSourceConfig.class);
 		
-		System.out.println(applicationContext.getBean("predictorPastEvaluator", PredictorPastEvaluator.class).evaluate(new RandomPredictor()));
+		System.out.println(applicationContext.getBean("predictorPastEvaluator", PredictorPastEvaluator.class).evaluate(predictor));
 	}
 	
 }
