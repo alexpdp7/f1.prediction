@@ -28,7 +28,8 @@ public class PredictorPastEvaluator {
 		List<Integer> scores = jdbcTemplate.query(
 				"select distinct calendar.season, calendar.round, calendar.circuit_name " +
 				"from   grand_prix_driver_results " +
-				"join   calendar on grand_prix_driver_results.season = calendar.season and grand_prix_driver_results.round = calendar.round", new RowMapper<Integer>() {
+				"join   calendar on grand_prix_driver_results.season = calendar.season and grand_prix_driver_results.round = calendar.round " +
+				"order by calendar.season, calendar.round", new RowMapper<Integer>() {
 			public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
 				int season = rs.getInt("season");
 				int round = rs.getInt("round");
