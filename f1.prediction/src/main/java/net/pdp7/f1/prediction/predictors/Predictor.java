@@ -2,6 +2,8 @@ package net.pdp7.f1.prediction.predictors;
 
 import java.util.Arrays;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 public interface Predictor {
 
 	public Prediction predict(int season, int round, String circuitName, Entrant[] entrants);
@@ -35,6 +37,11 @@ public interface Predictor {
 		@Override
 		public String toString() {
 			return super.toString() + "teamName:" + teamName + ",driverName:" + driverName;
+		}
+		
+		@Override
+		public int hashCode() {
+			return new HashCodeBuilder().append(teamName).append(driverName).toHashCode();
 		}
 	}
 }
