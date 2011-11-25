@@ -27,7 +27,8 @@ public class AlexPredictorTest extends TestCase {
 	}
 	
 	public void test2() throws Exception {
-	SimpleJdbcTemplate jdbcTemplate = new SimpleJdbcTemplate(ModelTestUtils.get20052011DataSource());
+		SimpleJdbcTemplate jdbcTemplate = new SimpleJdbcTemplate(ModelTestUtils.get20052011DataSource());
+		
 		Entrant[] entrants = new Entrant[] {
 				new Entrant("Red Bull-Renault","Sebastian Vettel"),
 				new Entrant("McLaren-Mercedes","Lewis Hamilton"),
