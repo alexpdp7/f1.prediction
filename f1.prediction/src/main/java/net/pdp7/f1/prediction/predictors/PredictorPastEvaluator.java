@@ -24,11 +24,12 @@ public class PredictorPastEvaluator {
 		this.predictionScorer = predictionScorer;
 	}
 	
-	public int evaluate(final Predictor predictor) {
+	public int evaluate(final Predictor predictor, int fromSeason, int toSeason) {
 		List<Integer> scores = jdbcTemplate.query(
 				"select distinct calendar.season, calendar.round, calendar.circuit_name " +
 				"from   grand_prix_driver_results " +
 				"join   calendar on grand_prix_driver_results.season = calendar.season and grand_prix_driver_results.round = calendar.round " +
+				"where  calendar.season between ? and ? " +
 				"order by calendar.season, calendar.round", new RowMapper<Integer>() {
 			public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
 				int season = rs.getInt("season");
@@ -51,7 +52,9 @@ public class PredictorPastEvaluator {
 				logger.debug("season {} round {} prediction {} score {}", new Object[] { season, round, prediction, score});
 				return score;
 			}
-		});
+		},
+				fromSeason,
+				toSeason);
 
 		int evaluation = 0;
 

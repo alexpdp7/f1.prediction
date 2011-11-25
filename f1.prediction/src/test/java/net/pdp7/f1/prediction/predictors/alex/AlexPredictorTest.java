@@ -19,7 +19,7 @@ public class AlexPredictorTest extends TestCase {
 		for(int i=0; i<20; i++) {
 			System.out.println(i);
 			float driverPowerRatingDecayRate = (float) Math.random();
-			int predictorResult = PredictorPastEvaluatorTest.testPredictor(new AlexPredictor(new RatingCalculator(jdbcTemplate), jdbcTemplate, driverPowerRatingDecayRate));
+			int predictorResult = PredictorPastEvaluatorTest.testPredictor(new AlexPredictor(new RatingCalculator(jdbcTemplate), jdbcTemplate, driverPowerRatingDecayRate), 2011, 2011);
 			results.put(driverPowerRatingDecayRate, predictorResult);
 		}
 		
@@ -55,7 +55,7 @@ public class AlexPredictorTest extends TestCase {
 				new Entrant("Williams-Cosworth","Rubens Barrichello"),
 		};
 		
-		System.out.println(new AlexPredictor(new RatingCalculator(jdbcTemplate), jdbcTemplate, 0.7455967f).predict(2011, 19, "foo", entrants));
+		System.out.println(new AlexPredictor(new RatingCalculator(jdbcTemplate), jdbcTemplate, 0.77f).predict(2011, 19, "foo", entrants));
 	}
 	
 }

@@ -15,12 +15,12 @@ import junit.framework.TestCase;
 public class PredictorPastEvaluatorTest extends TestCase {
 
 	public void test() throws Exception {
-		testPredictor(new RandomPredictor());
+		testPredictor(new RandomPredictor(), 2005, 2011);
 	}
 
-	public static int testPredictor(Predictor predictor) throws IOException {
+	public static int testPredictor(Predictor predictor, int fromSeason, int toSeason) throws IOException {
 		PredictorPastEvaluator predictorPastEvaluator = createPredictorPastEvaluator();
-		return predictorPastEvaluator.evaluate(predictor);
+		return predictorPastEvaluator.evaluate(predictor, fromSeason, toSeason);
 	}
 
 	public static PredictorPastEvaluator predictorPastEvaluator = null;
