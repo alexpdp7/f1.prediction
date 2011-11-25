@@ -6,7 +6,7 @@ public class RandomPredictor implements Predictor {
 		return new Prediction(
 				randomEntrantName(entrants),
 				randomEntrantName(entrants),
-				new String[] {
+				new String[] { // FIXME: can have duplicates!
 					randomEntrantName(entrants),
 					randomEntrantName(entrants),
 					randomEntrantName(entrants),
