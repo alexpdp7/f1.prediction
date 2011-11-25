@@ -65,7 +65,10 @@ public class AlexPredictor implements Predictor {
 					.put("round", round)
 					.map);
 		
-		float decayRate = driverPowerRatingDecayRate;
+		return calculatePowerRatingOnRounds(entrant, previousSeasonRounds, driverPowerRatingDecayRate);
+	}
+
+	protected float calculatePowerRatingOnRounds(Entrant entrant, List<Map<String, Object>> previousSeasonRounds, float decayRate) {
 		float ratings = 0.0f;
 		float upperRatings = 0.0f;
 		int distance = 1;
