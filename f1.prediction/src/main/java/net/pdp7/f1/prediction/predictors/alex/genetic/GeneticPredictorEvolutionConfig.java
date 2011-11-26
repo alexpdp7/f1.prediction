@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.uncommons.maths.random.MersenneTwisterRNG;
+import org.uncommons.watchmaker.framework.CachingFitnessEvaluator;
 import org.uncommons.watchmaker.framework.CandidateFactory;
 import org.uncommons.watchmaker.framework.EvolutionEngine;
 import org.uncommons.watchmaker.framework.EvolutionaryOperator;
@@ -40,7 +41,7 @@ public class GeneticPredictorEvolutionConfig {
 	}
 
 	public @Bean FitnessEvaluator<double[]> fitnessEvaluator() {
-		return new AlexPredictorParamsFitnessEvaluator(f1PredictionConfig.predictorPastEvaluator(), ratingCalculator(), f1PredictionConfig.jdbcTemplate(), 2011, 2011);
+		return new CachingFitnessEvaluator<double[]>(new AlexPredictorParamsFitnessEvaluator(f1PredictionConfig.predictorPastEvaluator(), ratingCalculator(), f1PredictionConfig.jdbcTemplate(), 2011, 2011));
 	}
 
 	public @Bean RatingCalculator ratingCalculator() {
