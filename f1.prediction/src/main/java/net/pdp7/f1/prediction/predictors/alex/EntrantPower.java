@@ -2,6 +2,8 @@ package net.pdp7.f1.prediction.predictors.alex;
 
 import java.util.Comparator;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import net.pdp7.f1.prediction.predictors.Predictor.Entrant;
 
 public class EntrantPower {
@@ -23,6 +25,11 @@ public class EntrantPower {
 			return powerDifference == 0 ? o1.entrant.driverName.compareTo(o2.entrant.driverName) : (int) Math.signum(powerDifference);
 		}
 		
+	}
+	
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
 	}
 
 }
