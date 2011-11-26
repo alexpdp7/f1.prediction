@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import net.pdp7.f1.prediction.predictors.alex.CachingRatingCalculator;
 import net.pdp7.f1.prediction.predictors.alex.RatingCalculator;
+import net.pdp7.f1.prediction.predictors.alex.SimpleRatingCalculator;
 import net.pdp7.f1.prediction.spring.DataSourceConfig;
 import net.pdp7.f1.prediction.spring.F1PredictionConfig;
 
@@ -45,7 +47,11 @@ public class GeneticPredictorEvolutionConfig {
 	}
 
 	public @Bean RatingCalculator ratingCalculator() {
-		return new RatingCalculator(f1PredictionConfig.jdbcTemplate());
+		return new CachingRatingCalculator(simpleRatingCalculator());
+	}
+
+	private SimpleRatingCalculator simpleRatingCalculator() {
+		return new SimpleRatingCalculator(f1PredictionConfig.jdbcTemplate());
 	}
 
 	public @Bean EvolutionaryOperator<double[]> evolutionaryOperator() {

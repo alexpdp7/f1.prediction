@@ -20,7 +20,7 @@ public class AlexPredictorTest extends TestCase {
 		for(int i=0; i<5000; i++) {
 			System.out.println(i);
 			AlexPredictorParams params = AlexPredictor.AlexPredictorParams.randomParams();
-			int predictorResult = PredictorPastEvaluatorTest.testPredictor(new AlexPredictor(new RatingCalculator(jdbcTemplate), jdbcTemplate, params), 2011, 2011);
+			int predictorResult = PredictorPastEvaluatorTest.testPredictor(new AlexPredictor(new SimpleRatingCalculator(jdbcTemplate), jdbcTemplate, params), 2011, 2011);
 			results.put(predictorResult, params);
 			int bestResult = results.lastKey();
 			System.out.println(i + " - " + bestResult + " - " + results.get(bestResult));
