@@ -6,6 +6,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
 import net.pdp7.commons.util.MapUtils;
@@ -15,13 +18,13 @@ public class AlexPredictor implements Predictor {
 
 	protected final RatingCalculator ratingCalculator;
 	protected final SimpleJdbcTemplate jdbcTemplate;
+	protected final AlexPredictorParams alexPredictorParams;
 	
-	protected float driverPowerRatingDecayRate;
 
-	public AlexPredictor(RatingCalculator ratingCalculator, SimpleJdbcTemplate jdbcTemplate, float driverPowerRatingDecayRate) {
+	public AlexPredictor(RatingCalculator ratingCalculator, SimpleJdbcTemplate jdbcTemplate, AlexPredictorParams alexPredictorParams) {
 		this.ratingCalculator = ratingCalculator;
 		this.jdbcTemplate = jdbcTemplate;
-		this.driverPowerRatingDecayRate = driverPowerRatingDecayRate;
+		this.alexPredictorParams = alexPredictorParams;
 	}
 	
 	public Prediction predict(int season, int round, String circuitName, Entrant[] entrants) {
@@ -46,8 +49,13 @@ public class AlexPredictor implements Predictor {
 	protected float calculatePowerRating(Entrant entrant, int season, int round, String circuitName) {
 		
 		float driverPowerRating = calculateDriverPowerRating(entrant, season, round, circuitName);
+		float driverCircuitPowerRating = calculateDriverCircuitPowerRating(entrant, season, round, circuitName);
 		
-		return (float) driverPowerRating;
+		return (
+				(driverPowerRating * alexPredictorParams.driverPowerWeight) + 
+				(driverCircuitPowerRating * alexPredictorParams.driverCircuitPowerWeight)
+				)
+				/ (alexPredictorParams.driverPowerWeight + alexPredictorParams.driverCircuitPowerWeight);
 	}
 	
 	protected float calculateDriverPowerRating(Entrant entrant, int season, int round, String circuitName) {
@@ -65,9 +73,32 @@ public class AlexPredictor implements Predictor {
 					.put("round", round)
 					.map);
 		
-		return calculatePowerRatingOnRounds(entrant, previousSeasonRounds, driverPowerRatingDecayRate);
+		return calculatePowerRatingOnRounds(entrant, previousSeasonRounds, alexPredictorParams.driverPowerRatingDecayRate);
 	}
 
+	protected float calculateDriverCircuitPowerRating(Entrant entrant, int season, int round, String circuitName) {
+		List<Map<String, Object>> previousSeasonRounds = jdbcTemplate.queryForList(
+				"select   grand_prix_driver_results.season, grand_prix_driver_results.round " +
+				"from     grand_prix_driver_results " +
+				"join     calendar on  grand_prix_driver_results.season = calendar.season " +
+				"                  and grand_prix_driver_results.round = calendar.round " +
+				"where    driver_name = :driverName " +
+				"and      (grand_prix_driver_results.season < :season " +
+				"          or grand_prix_driver_results.season = :season and grand_prix_driver_results.round < :round) " +
+				"and      circuit_name = :circuitName " +
+				"and      finish_position is not null " +
+				"order by grand_prix_driver_results.season desc, grand_prix_driver_results.round desc", 
+				MapUtils
+					.<String,Object>build("driverName", entrant.driverName)
+					.put("season", season)
+					.put("round", round)
+					.put("circuitName", circuitName)
+					.map);
+		
+		return calculatePowerRatingOnRounds(entrant, previousSeasonRounds, alexPredictorParams.driverCircuitPowerRatingDecayRate);
+	}
+
+	
 	protected float calculatePowerRatingOnRounds(Entrant entrant, List<Map<String, Object>> previousSeasonRounds, float decayRate) {
 		float ratings = 0.0f;
 		float upperRatings = 0.0f;
@@ -90,5 +121,43 @@ public class AlexPredictor implements Predictor {
 	
 	protected float decayFactor(int ago, float scale) {
 		return (float) Math.exp(-ago*Math.pow(scale/1.3,1.8));
+	}
+	
+	public static class AlexPredictorParams {
+
+		public final float driverPowerRatingDecayRate;
+		public final float driverCircuitPowerRatingDecayRate;
+		public final float driverPowerWeight;
+		public final float driverCircuitPowerWeight;
+
+		public AlexPredictorParams(float driverPowerRatingDecayRate, float driverCircuitPowerRatingDecayRate, float driverPowerWeight, float driverCircuitPowerWeight) {
+			this.driverPowerRatingDecayRate = driverPowerRatingDecayRate;
+			this.driverCircuitPowerRatingDecayRate = driverCircuitPowerRatingDecayRate;
+			this.driverPowerWeight = driverPowerWeight;
+			this.driverCircuitPowerWeight = driverCircuitPowerWeight;
+		}
+		
+		@Override
+		public String toString() {
+			return ToStringBuilder.reflectionToString(this);
+		}
+		
+		@Override
+		public int hashCode() {
+			return HashCodeBuilder.reflectionHashCode(this);
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			return EqualsBuilder.reflectionEquals(this, obj);
+		}
+		
+		public static AlexPredictorParams randomParams() {
+			return new AlexPredictorParams(
+					(float) Math.random(), 
+					(float) Math.random(), 
+					(float) Math.random(), 
+					(float) Math.random());
+		}
 	}
 }

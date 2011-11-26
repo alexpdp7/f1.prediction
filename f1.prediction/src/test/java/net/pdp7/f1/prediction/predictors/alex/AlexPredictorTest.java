@@ -3,31 +3,34 @@ package net.pdp7.f1.prediction.predictors.alex;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
-
-import net.pdp7.f1.prediction.model.ModelTestUtils;
-import net.pdp7.f1.prediction.predictors.PredictorPastEvaluatorTest;
-import net.pdp7.f1.prediction.predictors.Predictor.Entrant;
 import junit.framework.TestCase;
+import net.pdp7.f1.prediction.model.ModelUtils;
+import net.pdp7.f1.prediction.predictors.Predictor.Entrant;
+import net.pdp7.f1.prediction.predictors.PredictorPastEvaluatorTest;
+import net.pdp7.f1.prediction.predictors.alex.AlexPredictor.AlexPredictorParams;
+
+import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
 public class AlexPredictorTest extends TestCase {
 
 	public void test() throws Exception {
-		SimpleJdbcTemplate jdbcTemplate = new SimpleJdbcTemplate(ModelTestUtils.get20052011DataSource());
-		SortedMap<Float, Integer> results = new TreeMap<Float, Integer>();
+		SimpleJdbcTemplate jdbcTemplate = new SimpleJdbcTemplate(ModelUtils.get20052011DataSource());
+		SortedMap<Integer, AlexPredictor.AlexPredictorParams> results = new TreeMap<Integer, AlexPredictor.AlexPredictorParams>();
 		
-		for(int i=0; i<20; i++) {
+		for(int i=0; i<5000; i++) {
 			System.out.println(i);
-			float driverPowerRatingDecayRate = (float) Math.random();
-			int predictorResult = PredictorPastEvaluatorTest.testPredictor(new AlexPredictor(new RatingCalculator(jdbcTemplate), jdbcTemplate, driverPowerRatingDecayRate), 2011, 2011);
-			results.put(driverPowerRatingDecayRate, predictorResult);
+			AlexPredictorParams params = AlexPredictor.AlexPredictorParams.randomParams();
+			int predictorResult = PredictorPastEvaluatorTest.testPredictor(new AlexPredictor(new RatingCalculator(jdbcTemplate), jdbcTemplate, params), 2011, 2011);
+			results.put(predictorResult, params);
+			int bestResult = results.lastKey();
+			System.out.println(i + " - " + bestResult + " - " + results.get(bestResult));
 		}
 		
 		System.out.println(results);
 	}
 	
 	public void test2() throws Exception {
-		SimpleJdbcTemplate jdbcTemplate = new SimpleJdbcTemplate(ModelTestUtils.get20052011DataSource());
+		SimpleJdbcTemplate jdbcTemplate = new SimpleJdbcTemplate(ModelUtils.get20052011DataSource());
 		
 		Entrant[] entrants = new Entrant[] {
 				new Entrant("Red Bull-Renault","Sebastian Vettel"),
@@ -56,7 +59,7 @@ public class AlexPredictorTest extends TestCase {
 				new Entrant("Williams-Cosworth","Rubens Barrichello"),
 		};
 		
-		System.out.println(new AlexPredictor(new RatingCalculator(jdbcTemplate), jdbcTemplate, 0.76418805f).predict(2011, 19, "foo", entrants));
+//		System.out.println(new AlexPredictor(new RatingCalculator(jdbcTemplate), jdbcTemplate, 0.76418805f).predict(2011, 19, "Autódromo José Carlos Pace, São Paulo", entrants));
 	}
 	
 }

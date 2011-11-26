@@ -9,15 +9,15 @@ import javax.sql.DataSource;
 import org.apache.commons.io.IOUtils;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
-public class ModelTestUtils {
+public class ModelUtils {
 	
-	protected ModelTestUtils() {}
+	protected ModelUtils() {}
 	
 	public static String get20052011DatabaseUrl() throws IOException {
 		File tempFile = File.createTempFile("npfpmmtu", ".h2.db");
 		
 		FileOutputStream out = new FileOutputStream(tempFile);
-		IOUtils.copy(ModelTestUtils.class.getResourceAsStream("/net/pdp7/f1/prediction/model/resultsdb2005-2011.h2.db"), out);
+		IOUtils.copy(ModelUtils.class.getResourceAsStream("/net/pdp7/f1/prediction/model/resultsdb2005-2011.h2.db"), out);
 		out.close();
 		
 		return "jdbc:h2:" + tempFile.getAbsolutePath().replace(".h2.db", "");

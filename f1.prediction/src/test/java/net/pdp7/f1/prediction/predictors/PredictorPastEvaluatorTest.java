@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import net.pdp7.commons.spring.context.annotation.AnnotationConfigApplicationContextUtils;
 import net.pdp7.commons.util.MapUtils;
-import net.pdp7.f1.prediction.model.ModelTestUtils;
+import net.pdp7.f1.prediction.model.ModelUtils;
 import net.pdp7.f1.prediction.spring.DataSourceConfig;
 import net.pdp7.f1.prediction.spring.F1PredictionConfig;
 
@@ -31,7 +31,7 @@ public class PredictorPastEvaluatorTest extends TestCase {
 		}
 		
 		AnnotationConfigApplicationContext applicationContext = AnnotationConfigApplicationContextUtils.createConfiguredAnnotationConfigApplicationContext(
-				MapUtils.createPropertiesFromMap(MapUtils.build("jdbc.url", ModelTestUtils.get20052011DatabaseUrl()).map), 
+				MapUtils.createPropertiesFromMap(MapUtils.build("jdbc.url", ModelUtils.get20052011DatabaseUrl()).map), 
 				F1PredictionConfig.class, DataSourceConfig.JdbcUrlDataSourceConfig.class);
 		
 		predictorPastEvaluator = applicationContext.getBean("predictorPastEvaluator", PredictorPastEvaluator.class);
