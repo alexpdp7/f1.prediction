@@ -17,9 +17,13 @@ public class CachingRatingCalculator implements RatingCalculator {
 	
 	public float calculateDriverRating(int season, int round, String driverName) {
 		List<Object> key = Arrays.<Object>asList(season, round, driverName);
-		if(!driverRating.containsKey(key)) {
-			driverRating.put(key, ratingCalculator.calculateDriverRating(season, round, driverName));
+		
+		synchronized (driverRating) {
+			if(!driverRating.containsKey(key)) {
+				driverRating.put(key, ratingCalculator.calculateDriverRating(season, round, driverName));
+			}
 		}
+		
 		return driverRating.get(key);
 	}
 
@@ -27,9 +31,13 @@ public class CachingRatingCalculator implements RatingCalculator {
 	
 	public float calculateTeamRating(int season, int round, String teamName) {
 		List<Object> key = Arrays.<Object>asList(season, round, teamName);
-		if(!teamRating.containsKey(key)) {
-			teamRating.put(key, ratingCalculator.calculateTeamRating(season, round, teamName));
+		
+		synchronized(teamRating) {
+			if(!teamRating.containsKey(key)) {
+				teamRating.put(key, ratingCalculator.calculateTeamRating(season, round, teamName));
+			}
 		}
+		
 		return teamRating.get(key);
 	}
 
