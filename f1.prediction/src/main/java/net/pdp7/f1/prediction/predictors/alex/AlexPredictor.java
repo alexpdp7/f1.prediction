@@ -46,16 +46,26 @@ public class AlexPredictor implements Predictor {
 		return new Prediction(entrantPowers.get(0).entrant.driverName, entrantPowers.get(0).entrant.driverName, topTen);
 	}
 
+	/** @return -1 if driver hasn't raced before */
 	protected float calculatePowerRating(Entrant entrant, int season, int round, String circuitName) {
 		
 		float driverPowerRating = calculateDriverPowerRating(entrant, season, round, circuitName);
 		float driverCircuitPowerRating = calculateDriverCircuitPowerRating(entrant, season, round, circuitName);
 		
-		return (
-				(driverPowerRating * alexPredictorParams.driverPowerWeight) + 
-				(driverCircuitPowerRating * alexPredictorParams.driverCircuitPowerWeight)
-				)
-				/ (alexPredictorParams.driverPowerWeight + alexPredictorParams.driverCircuitPowerWeight);
+		float result = 0;
+		float upperBound = 0;
+		
+		if(driverPowerRating >= 0) {
+			result += driverPowerRating * alexPredictorParams.driverPowerWeight;
+			upperBound += alexPredictorParams.driverPowerWeight;
+		}
+		
+		if(driverCircuitPowerRating >= 0) {
+			result += driverCircuitPowerRating * alexPredictorParams.driverCircuitPowerWeight;
+			upperBound += alexPredictorParams.driverCircuitPowerWeight;
+		}
+
+		return upperBound >= 0.001 ? result / upperBound : 0;
 	}
 	
 	protected float calculateDriverPowerRating(Entrant entrant, int season, int round, String circuitName) {
@@ -76,6 +86,7 @@ public class AlexPredictor implements Predictor {
 		return calculatePowerRatingOnRounds(entrant, previousSeasonRounds, alexPredictorParams.driverPowerRatingDecayRate);
 	}
 
+	/** @return -1 if driver hasn't raced in this circuit */
 	protected float calculateDriverCircuitPowerRating(Entrant entrant, int season, int round, String circuitName) {
 		List<Map<String, Object>> previousSeasonRounds = jdbcTemplate.queryForList(
 				"select   grand_prix_driver_results.season, grand_prix_driver_results.round " +
@@ -98,8 +109,13 @@ public class AlexPredictor implements Predictor {
 		return calculatePowerRatingOnRounds(entrant, previousSeasonRounds, alexPredictorParams.driverCircuitPowerRatingDecayRate);
 	}
 
-	
+	/** @return -1 if previousSeasonRounds is empty */
 	protected float calculatePowerRatingOnRounds(Entrant entrant, List<Map<String, Object>> previousSeasonRounds, float decayRate) {
+		
+		if(previousSeasonRounds.isEmpty()) {
+			return -1;
+		}
+		
 		float ratings = 0.0f;
 		float upperRatings = 0.0f;
 		int distance = 1;
