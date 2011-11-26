@@ -1,6 +1,14 @@
 package net.pdp7.f1.prediction.predictors.alex.genetic;
 
-import java.util.Arrays;
+import java.awt.event.ActionEvent;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.util.Collections;
+import java.util.List;
+
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
+import javax.swing.JFrame;
 
 import net.pdp7.commons.spring.context.annotation.AnnotationConfigApplicationContextUtils;
 import net.pdp7.commons.util.MapUtils;
@@ -9,8 +17,9 @@ import net.pdp7.f1.prediction.spring.DataSourceConfig;
 import net.pdp7.f1.prediction.spring.F1PredictionConfig;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.uncommons.watchmaker.framework.EvaluatedCandidate;
 import org.uncommons.watchmaker.framework.EvolutionEngine;
-import org.uncommons.watchmaker.framework.termination.ElapsedTime;
+import org.uncommons.watchmaker.framework.termination.UserAbort;
 import org.uncommons.watchmaker.swing.evolutionmonitor.EvolutionMonitor;
 
 public class GeneticPredictorEvolver {
@@ -29,10 +38,44 @@ public class GeneticPredictorEvolver {
 		
 		evolutionMonitor.showInFrame("Evolution", true);
 		
-		double[] evolve = evolutionEngine.evolve(100, 5, new ElapsedTime(1200000));
+		final UserAbort userAbort = new UserAbort();
 		
-		System.out.println(Arrays.toString(evolve));
+		JFrame jFrame = new JFrame();
+		jFrame.getContentPane().add(new JButton(new AbstractAction("abort") {
+			
+			private static final long serialVersionUID = 1L;
+
+			public void actionPerformed(ActionEvent e) {
+				userAbort.abort();
+			}
+		}));
 		
+		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		jFrame.pack();
+		jFrame.setVisible(true);
+		
+		List<EvaluatedCandidate<double[]>> evolvePopulation = evolutionEngine.evolvePopulation(1000, 20, userAbort);
+		
+		Collections.sort(evolvePopulation);
+		
+		FileWriter fileWriter = new FileWriter("genetic_results.txt");
+		BufferedWriter writer = new BufferedWriter(fileWriter);
+		
+		System.out.println("fitness\tdriverCircuitPowerRatingDecayRate\tdriverCircuitPowerWeight\tdriverPowerRatingDecayRate\tdriverPowerWeight\n");
+		
+		for(EvaluatedCandidate<double[]> evaluatedCandidate : evolvePopulation) {
+			writer.write(
+					evaluatedCandidate.getFitness() + "\t" + 
+					evaluatedCandidate.getCandidate()[0] + "\t" +
+					evaluatedCandidate.getCandidate()[1] + "\t" +
+					evaluatedCandidate.getCandidate()[2] + "\t" +
+					evaluatedCandidate.getCandidate()[3] + "\n");
+		}
+		
+		writer.flush();
+		fileWriter.close();
+		
+		System.err.println("done!");
+		System.exit(0);
 	}
-	
 }
