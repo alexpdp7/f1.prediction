@@ -1,32 +1,31 @@
 package net.pdp7.f1.prediction.predictors.alex;
 
-import java.util.SortedMap;
-import java.util.TreeMap;
-
 import junit.framework.TestCase;
+import net.pdp7.f1.prediction.LoggingUtils;
 import net.pdp7.f1.prediction.model.ModelUtils;
 import net.pdp7.f1.prediction.predictors.Predictor.Entrant;
 import net.pdp7.f1.prediction.predictors.PredictorPastEvaluatorTest;
 import net.pdp7.f1.prediction.predictors.alex.AlexPredictor.AlexPredictorParams;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
 public class AlexPredictorTest extends TestCase {
 
+	protected final Logger logger = LoggerFactory.getLogger(getClass());
+	
 	public void test() throws Exception {
+		LoggingUtils.setupLogging();
 		SimpleJdbcTemplate jdbcTemplate = new SimpleJdbcTemplate(ModelUtils.get20052011DataSource());
-		SortedMap<Integer, AlexPredictor.AlexPredictorParams> results = new TreeMap<Integer, AlexPredictor.AlexPredictorParams>();
 		
-		for(int i=0; i<5000; i++) {
-			System.out.println(i);
-			AlexPredictorParams params = AlexPredictor.AlexPredictorParams.randomParams();
-			int predictorResult = PredictorPastEvaluatorTest.testPredictor(new AlexPredictor(new SimpleRatingCalculator(jdbcTemplate), jdbcTemplate, params), 2011, 2011);
-			results.put(predictorResult, params);
-			int bestResult = results.lastKey();
-			System.out.println(i + " - " + bestResult + " - " + results.get(bestResult));
-		}
+		int predictorResult = PredictorPastEvaluatorTest.testPredictor(
+				new AlexPredictor(
+						new SimpleRatingCalculator(jdbcTemplate), 
+						jdbcTemplate, 
+						new AlexPredictorParams(0.7655972053017919f, 0.6198067666337721f, .99803f, 0)), 2011, 2011);
 		
-		System.out.println(results);
+		logger.info("predictor result {}" , predictorResult);
 	}
 	
 	public void test2() throws Exception {
@@ -59,7 +58,11 @@ public class AlexPredictorTest extends TestCase {
 				new Entrant("Williams-Cosworth","Rubens Barrichello"),
 		};
 		
-//		System.out.println(new AlexPredictor(new RatingCalculator(jdbcTemplate), jdbcTemplate, 0.76418805f).predict(2011, 19, "Autódromo José Carlos Pace, São Paulo", entrants));
+		System.out.println(new AlexPredictor(new SimpleRatingCalculator(jdbcTemplate), jdbcTemplate, new AlexPredictorParams(
+				0.7655972053017919f, 
+				0.6198067666337721f, 
+				.99803f, 
+				0)).predict(2011, 19, "Autódromo José Carlos Pace, São Paulo", entrants));
 	}
 	
 }

@@ -24,3 +24,21 @@ Prediction for Interlagos:
  8. Nico Rosberg
  9. Adrian Sutil
 10. Paul di Resta
+
+20111127:
+
+Obtained 262 finding a better driverPowerRatingDecayRate (0.7655972053017919) using genetic search. Genetic search also found out that driverCircuitPowerRating does
+not work on version c08a8a2f73a808129a8751a64fdd9d07af09f258
+
+Prediction for Interlagos:
+
+ 1. Sebastian Vettel
+ 2. Jenson Button
+ 3. Fernando Alonso
+ 4. Lewis Hamilton
+ 5. Mark Webber
+ 6. Felipe Massa
+ 7. Michael Schumacher
+ 8. Nico Rosberg
+ 9. Adrian Sutil
+10. Paul di Resta
