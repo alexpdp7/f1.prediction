@@ -23,7 +23,7 @@ public class AlexPredictorTest extends TestCase {
 				new AlexPredictor(
 						new SimpleRatingCalculator(jdbcTemplate), 
 						jdbcTemplate, 
-						new AlexPredictorParams(0.7655972053017919f, 0.6198067666337721f, .99803f, 0)), 2011, 2011);
+						new AlexPredictorParams(0.7655972053017919f, 0.5f, 0.5f, 0.5f, 1,0,0,0)), 2011, 2011);
 		
 		logger.info("predictor result {}" , predictorResult);
 	}
@@ -58,11 +58,7 @@ public class AlexPredictorTest extends TestCase {
 				new Entrant("Williams-Cosworth","Rubens Barrichello"),
 		};
 		
-		System.out.println(new AlexPredictor(new SimpleRatingCalculator(jdbcTemplate), jdbcTemplate, new AlexPredictorParams(
-				0.7655972053017919f, 
-				0.6198067666337721f, 
-				.99803f, 
-				0)).predict(2011, 19, "Autódromo José Carlos Pace, São Paulo", entrants));
+		System.out.println(new AlexPredictor(new SimpleRatingCalculator(jdbcTemplate), jdbcTemplate, new AlexPredictorParams(0.7655972053017919f, 0.5f, 0.5f, 0.5f, 1,0,0,0)).predict(2011, 19, "Autódromo José Carlos Pace, São Paulo", entrants));
 	}
 	
 }

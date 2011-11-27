@@ -15,6 +15,7 @@ import net.pdp7.commons.util.MapUtils;
 import net.pdp7.f1.prediction.model.ModelUtils;
 import net.pdp7.f1.prediction.spring.DataSourceConfig;
 import net.pdp7.f1.prediction.spring.F1PredictionConfig;
+import net.pdp7.f1.prediction.spring.LogConfig;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.uncommons.watchmaker.framework.EvaluatedCandidate;
@@ -29,7 +30,8 @@ public class GeneticPredictorEvolver {
 				MapUtils.createPropertiesFromMap(MapUtils.build("jdbc.url", ModelUtils.get20052011DatabaseUrl()).map), 
 				F1PredictionConfig.class, 
 				DataSourceConfig.JdbcUrlDataSourceConfig.class,
-				GeneticPredictorEvolutionConfig.class);
+				GeneticPredictorEvolutionConfig.class,
+				LogConfig.class);
 		
 		@SuppressWarnings("unchecked")
 		EvolutionEngine<double[]> evolutionEngine = applicationContext.getBean("evolutionEngine", EvolutionEngine.class);
@@ -54,14 +56,14 @@ public class GeneticPredictorEvolver {
 		jFrame.pack();
 		jFrame.setVisible(true);
 		
-		List<EvaluatedCandidate<double[]>> evolvePopulation = evolutionEngine.evolvePopulation(1000, 20, userAbort);
+		List<EvaluatedCandidate<double[]>> evolvePopulation = evolutionEngine.evolvePopulation(50, 3, userAbort);
 		
 		Collections.sort(evolvePopulation);
 		
 		FileWriter fileWriter = new FileWriter("genetic_results.txt");
 		BufferedWriter writer = new BufferedWriter(fileWriter);
 		
-		System.out.println("fitness\tdriverCircuitPowerRatingDecayRate\tdriverCircuitPowerWeight\tdriverPowerRatingDecayRate\tdriverPowerWeight\n");
+		writer.write("fitness\tdriverPowerRatingDecayRate\tdriverCircuitPowerRatingDecayRate\tteamPowerRatingDecayRate\tteamCircuitPowerRatingDecayRate\tdriverPowerWeight\tdriverCircuitPowerWeight\tteamPowerWeight\tteamCircuitPowerWeight\n");
 		
 		for(EvaluatedCandidate<double[]> evaluatedCandidate : evolvePopulation) {
 			writer.write(
@@ -69,7 +71,11 @@ public class GeneticPredictorEvolver {
 					evaluatedCandidate.getCandidate()[0] + "\t" +
 					evaluatedCandidate.getCandidate()[1] + "\t" +
 					evaluatedCandidate.getCandidate()[2] + "\t" +
-					evaluatedCandidate.getCandidate()[3] + "\n");
+					evaluatedCandidate.getCandidate()[3] + "\t" +
+					evaluatedCandidate.getCandidate()[4] + "\t" +
+					evaluatedCandidate.getCandidate()[5] + "\t" +
+					evaluatedCandidate.getCandidate()[6] + "\t" +
+					evaluatedCandidate.getCandidate()[7] + "\n");
 		}
 		
 		writer.flush();

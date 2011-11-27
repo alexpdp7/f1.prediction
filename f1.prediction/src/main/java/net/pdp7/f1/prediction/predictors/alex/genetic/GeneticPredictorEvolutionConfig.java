@@ -73,7 +73,7 @@ public class GeneticPredictorEvolutionConfig {
 	}
 
 	public @Bean EvolutionaryOperator<double[]> alexPredictorParamsCrossover() {
-		return new DoubleArrayCrossover(new BinomialGenerator(4, 0.03, rng()), new ConstantGenerator<Probability>(new Probability(0.03)));
+		return new DoubleArrayCrossover(new BinomialGenerator(8, 0.03, rng()), new ConstantGenerator<Probability>(new Probability(0.03)));
 	}
 
 	public @Bean CandidateFactory<double[]> candidateFactory() {
