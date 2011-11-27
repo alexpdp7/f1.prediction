@@ -8,10 +8,14 @@ public class AlexPredictorParamsUtils {
 	
 	public static double[] toArray(AlexPredictorParams alexPredictorParams) {
 		return new double[] {
-				alexPredictorParams.driverCircuitPowerRatingDecayRate,
+				alexPredictorParams.driverPowerRatingDecayRate, 
+				alexPredictorParams.driverCircuitPowerRatingDecayRate, 
+				alexPredictorParams.teamPowerRatingDecayRate, 
+				alexPredictorParams.teamCircuitPowerRatingDecayRate, 
+				alexPredictorParams.driverPowerWeight, 
 				alexPredictorParams.driverCircuitPowerWeight,
-				alexPredictorParams.driverPowerRatingDecayRate,
-				alexPredictorParams.driverPowerWeight,
+				alexPredictorParams.teamPowerWeight, 
+				alexPredictorParams.teamCircuitPowerWeight
 		};
 	}
 	
@@ -20,7 +24,11 @@ public class AlexPredictorParamsUtils {
 				(float) params[0],
 				(float) params[1],
 				(float) params[2],
-				(float) params[3]);
+				(float) params[3],
+				(float) params[4],
+				(float) params[5],
+				(float) params[6],
+				(float) params[7]);
 	}
 	
 }
